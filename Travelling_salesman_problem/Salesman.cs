@@ -70,7 +70,7 @@ namespace Travelling_salesman_problem {
                 s[j] = true;
                 
             }
-            //ShowResult();
+            ShowResult();
         }
 
         private void CheckBest(bool[] s) {
@@ -96,7 +96,10 @@ namespace Travelling_salesman_problem {
                 int tempProfit = FindProfit(cities);
                 if (tempProfit > maxProfit) {
                     maxProfit = tempProfit;
-                    bestWay = new List<int>(cities);
+                    bestWay = new List<int>();
+                    bestWay.Add(0);
+                    bestWay.AddRange(cities);
+                    bestWay.Add(0);
                 }
                 int x = cities.Count - 1;
                 while (v[pos[x] + d[x]] > x && x > 0) {
@@ -145,8 +148,7 @@ namespace Travelling_salesman_problem {
         }
 
         private void ShowResult() {
-            Console.Write("Лучший путь: " + 1+" ");
-            bestWay.Add(0);
+            Console.Write("Лучший путь: " );
             for (int i = 0; i < bestWay.Count; i++) {
                 Console.Write(bestWay[i] + 1 + " ");
             }
@@ -155,7 +157,53 @@ namespace Travelling_salesman_problem {
         }
 
         public void ApproximateAlgorithm() {
+            int startV = 0;
+            int finishV = 0;
+            bestWay.Add(0);
+            //int[,] tempMatrix = new int[n, n];
+            //CloneMatrix(ref tempMatrix,citiesMatrix);
+            while (true) {
+                int minCost = int.MaxValue;
+                for (int i = 1; i < n; i++) {
+                    if (citiesMatrix[startV, i]!=0&&citiesMatrix[startV, i] < minCost&&!bestWay.Contains(i)) {
+                        minCost = citiesMatrix[startV, i];
+                        finishV = i;
+                    }
+                }
+                if (minCost == int.MaxValue) {
+                    TryToEnd();
+                    break;
+                }
+                else {
+                    bestWay.Add(finishV);
+                    maxProfit += s - minCost;
+                    startV = finishV;
+                }
+            }
+            ShowResult();
 
+        }
+
+        private void TryToEnd() {
+            for(int i = bestWay[bestWay.Count - 1]; i > 0; i--) {
+                if (citiesMatrix[i, 0] != 0) {
+                    bestWay.Add(0);
+                    maxProfit += s - citiesMatrix[i, 0];
+                    return;
+                }
+                else {
+                    bestWay.RemoveAt(i);
+                    maxProfit -= s - citiesMatrix[i, 0];
+                }
+            }
+        }
+
+        private void CloneMatrix(ref int[,] toMatrix, int[,] fromMatrix) {
+            for(int i = 0; i < n; i++) {
+                for(int j = 0; j < n; j++) {
+                    toMatrix[i, j] = fromMatrix[i, j];
+                }
+            }
         }
 
         public void HeuristicAlgorithm() {
