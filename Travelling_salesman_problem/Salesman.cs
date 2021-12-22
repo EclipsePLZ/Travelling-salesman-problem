@@ -13,6 +13,14 @@ namespace Travelling_salesman_problem {
         private List<int> bestWay = new List<int>();
         private int maxProfit = 0;
 
+        public List<int> GetBestWay() {
+            return bestWay;
+        }
+
+        public int GetMaxProfit() {
+            return maxProfit;
+        }
+
         public void ReadFromFile(string path) {
             using (StreamReader sr=new StreamReader(path)) {
                 string line = "";
@@ -42,13 +50,13 @@ namespace Travelling_salesman_problem {
             }
         }
 
+        
+
         public string[] GetResult() {
             string[] result = new string[2];
-            result[0] = "1 ";
             for(int i = 0; i < bestWay.Count; i++) {
                 result[0] += Convert.ToString(bestWay[i] + 1) + " ";
             }
-            result[0]+="1";
             result[1] = Convert.ToString(maxProfit);
             return result;
         }
@@ -160,8 +168,6 @@ namespace Travelling_salesman_problem {
             int startV = 0;
             int finishV = 0;
             bestWay.Add(0);
-            //int[,] tempMatrix = new int[n, n];
-            //CloneMatrix(ref tempMatrix,citiesMatrix);
             while (true) {
                 int minCost = int.MaxValue;
                 for (int i = 1; i < n; i++) {
@@ -180,12 +186,12 @@ namespace Travelling_salesman_problem {
                     startV = finishV;
                 }
             }
-            ShowResult();
+            //ShowResult();
 
         }
 
         private void TryToEnd() {
-            for(int i = bestWay[bestWay.Count - 1]; i > 0; i--) {
+            for(int i = bestWay.Count - 1; i > 0; i--) {
                 if (citiesMatrix[i, 0] != 0) {
                     bestWay.Add(0);
                     maxProfit += s - citiesMatrix[i, 0];
@@ -209,5 +215,7 @@ namespace Travelling_salesman_problem {
         public void HeuristicAlgorithm() {
 
         }
+
+
     }
 }
