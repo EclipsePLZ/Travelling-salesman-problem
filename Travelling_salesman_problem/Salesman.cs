@@ -176,7 +176,7 @@ namespace Travelling_salesman_problem {
                         finishV = i;
                     }
                 }
-                if (minCost == int.MaxValue) {
+                if (minCost == int.MaxValue||minCost>s) {
                     TryToEnd();
                     break;
                 }
@@ -201,6 +201,10 @@ namespace Travelling_salesman_problem {
                     bestWay.RemoveAt(i);
                     maxProfit -= s - citiesMatrix[i, 0];
                 }
+            }
+            if (bestWay.Count == 1) {
+                bestWay.Add(0);
+                maxProfit = 0;
             }
         }
 
