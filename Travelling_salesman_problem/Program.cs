@@ -11,7 +11,7 @@ namespace Travelling_salesman_problem {
             //sl.BruteForceAlgorithm();
             //salesman.ApproximateAlgorithm();
             Tests tests = new Tests();
-            tests.StartTesting(10, 14);
+            tests.StartTesting(2, 14);
             //tests.CreateDataTest(13,13);
             //tests.StartTesting(2, 10);
         }

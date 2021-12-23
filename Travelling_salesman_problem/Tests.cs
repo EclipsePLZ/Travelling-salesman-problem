@@ -9,9 +9,9 @@ using System.Threading.Tasks;
 namespace Travelling_salesman_problem {
     class Tests {
         public void StartTesting(int start, int n) {
-            //StartApprox(start, n);
-            //StartBruteForce(start, n);
-            StartHeuristic(start, n);
+            StartApprox(start, n);
+            StartBruteForce(start, n);
+            //StartHeuristic(start, n);
         }
 
         private void StartBruteForce(int start, int n) {

@@ -63,6 +63,7 @@ namespace Travelling_salesman_problem {
 
         public void BruteForceAlgorithm() {
             bool[] s = new bool[n];
+            maxProfit = 0;
 
             for(int i = 0; i < n; i++) {
                 s[i] = false;
@@ -78,7 +79,7 @@ namespace Travelling_salesman_problem {
                 s[j] = true;
                 
             }
-            ShowResult();
+            //ShowResult();
         }
 
         private void CheckBest(bool[] s) {
@@ -165,12 +166,13 @@ namespace Travelling_salesman_problem {
         }
 
         public void ApproximateAlgorithm() {
+            maxProfit = 0;
             int startV = 0;
             int finishV = 0;
             bestWay.Add(0);
             while (true) {
                 int minCost = int.MaxValue;
-                for (int i = 1; i < n; i++) {
+                for (int i = 0; i < n; i++) {
                     if (citiesMatrix[startV, i]!=0&&citiesMatrix[startV, i] < minCost&&!bestWay.Contains(i)) {
                         minCost = citiesMatrix[startV, i];
                         finishV = i;
