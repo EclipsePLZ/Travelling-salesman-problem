@@ -10,7 +10,8 @@ namespace Travelling_salesman_problem {
     class Tests {
         public void StartTesting(int start, int n) {
             //StartApprox(start, n);
-            StartBruteForce(start, n);
+            //StartBruteForce(start, n);
+            StartHeuristic(start, n);
         }
 
         private void StartBruteForce(int start, int n) {
@@ -29,7 +30,10 @@ namespace Travelling_salesman_problem {
                     numTests = 100;
                 }
                 if (i > 12) {
-                    numTests = 10;
+                    numTests = 30;
+                }
+                if (i == 14) {
+                    numTests = 7;
                 }
                 string result = "";
                 result += "Результат для алгоритма полного перебора при V = " + i;
@@ -96,7 +100,7 @@ namespace Travelling_salesman_problem {
             }
             for (int i = start; i <= n; i++) {
                 Console.WriteLine(i);
-                
+
                 if (i == 10) {
                     numTests /= 10;
                 }
@@ -104,7 +108,10 @@ namespace Travelling_salesman_problem {
                     numTests = 100;
                 }
                 if (i > 12) {
-                    numTests = 10;
+                    numTests = 30;
+                }
+                if (i == 14) {
+                    numTests = 7;
                 }
                 string result = "";
                 result += "Результат для приближенного алгоритма при V = " + i;
@@ -162,6 +169,86 @@ namespace Travelling_salesman_problem {
                 }
             }
             
+        }
+
+        private void StartHeuristic(int start, int n) {
+            int[,] matrix;
+            int numTests = 10000;
+            using (StreamWriter sw = new StreamWriter("HeuristicResult.txt", false)) {
+
+            }
+            for (int i = start; i <= n; i++) {
+                Console.WriteLine(i);
+
+                if (i == 10) {
+                    numTests /= 10;
+                }
+                if (i == 12) {
+                    numTests = 100;
+                }
+                if (i > 12) {
+                    numTests = 30;
+                }
+                if (i == 14) {
+                    numTests = 7;
+                }
+                string result = "";
+                result += "Результат для муравьиного алгоритма при V = " + i;
+                double totalTime = 0.0;
+                double countRightAnswers = 0.0;
+                double otkl = 0.0;
+
+                using (StreamReader sr = new StreamReader("matrix" + i + ".txt")) {
+                    for (int j = 0; j < numTests; j++) {
+                        Salesman salesman = new Salesman();
+                        string line = sr.ReadLine();
+                        matrix = new int[i, i];
+                        string[] splitLine = line.Split(" ");
+                        int numV = Convert.ToInt32(splitLine[0]);
+                        int profit = Convert.ToInt32(splitLine[1]);
+                        for (int k = 0; k < i; k++) {
+                            line = sr.ReadLine();
+                            string[] spLine = line.Split(" ");
+                            for (int h = 0; h < i; h++) {
+                                matrix[k, h] = Convert.ToInt32(spLine[h]);
+                            }
+                        }
+                        line = sr.ReadLine();
+                        splitLine = line.Split(" ");
+                        List<int> rightAnswer = new List<int>();
+                        int rightProfit = 0;
+                        for (int k = 0; k < splitLine.Length; k++) {
+                            rightAnswer.Add(Convert.ToInt32(splitLine[k]));
+                        }
+                        line = sr.ReadLine();
+                        rightProfit = Convert.ToInt32(line);
+                        line = sr.ReadLine();
+                        Stopwatch time = new Stopwatch();
+                        salesman.ReadFromMatrix(matrix, numV, profit);
+                        time.Start();
+                        salesman.HeuristicAlgorithm();
+                        time.Stop();
+                        totalTime += time.Elapsed.TotalMilliseconds;
+                        if (rightProfit == salesman.GetMaxProfit()) {
+                            countRightAnswers++;
+                        }
+                        else {
+                            Console.WriteLine(j);
+                            if (rightProfit == 0) {
+                                otkl += Math.Abs(salesman.GetMaxProfit());
+                            }
+                            else {
+                                otkl += Convert.ToDouble(Math.Abs(salesman.GetMaxProfit() - rightProfit)) / Convert.ToDouble(rightProfit);
+                            }
+                        }
+                    }
+                }
+                result += ", время работы алгоритма: " + totalTime / numTests + "мс. Процент правильных ответов: " + countRightAnswers / numTests * 100 + "%. Ср. относ. откл.: " + otkl / numTests;
+                using (StreamWriter sw = new StreamWriter("HeuristicResult.txt", true)) {
+                    sw.WriteLine(result);
+                }
+            }
+
         }
         public void CreateDataTest(int start,int n) {
             int[,] matrix;

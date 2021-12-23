@@ -11,7 +11,7 @@ namespace Travelling_salesman_problem {
         private int n;
         private int s;
         private List<int> bestWay = new List<int>();
-        private int maxProfit = 0;
+        private int maxProfit = int.MinValue;
 
         public List<int> GetBestWay() {
             return bestWay;
@@ -219,15 +219,15 @@ namespace Travelling_salesman_problem {
         public void HeuristicAlgorithm() {
             Random rnd = new Random();
             double[,] tau = new double[n, n];
-            double old = 0.3;
-            int m = 100;
-            int beta = 1;
-            int alpha = 1;
+            double old = 0.4;
+            int m = 20000;
+            double beta = 1.2;
+            double alpha = 0.9;
            
 
             for(int i = 0; i < n; i++) {
                 for(int j = 0; j < n; j++) {
-                    tau[i, j] = 1;
+                    tau[i, j] = n;
                 }
             }
 
@@ -235,9 +235,10 @@ namespace Travelling_salesman_problem {
                 bool end = false;
                 List<int> way = new List<int>();
                 
-                double[] p = new double[n];
+                
                 int position = 0;
                 while (!end) {
+                    double[] p = new double[n];
                     double znam = 0;
                     List<int> possible = new List<int>();
                     for (int j = 0; j < n; j++) {
@@ -248,22 +249,25 @@ namespace Travelling_salesman_problem {
                     }
                     if (possible.Count == 0) {
                         TryToEnd(ref way);
+                        position = 0;
+                        way.Add(position);
                     }
                     
                     foreach(int item in possible) {
-                        p[item] = 100 * 1/Math.Pow(citiesMatrix[position, item], beta) * Math.Pow(tau[position, item], alpha) / znam;
+                        p[item] = 100 * (1/Math.Pow(citiesMatrix[position, item], beta)) * Math.Pow(tau[position, item], alpha) / znam;
                     }
                     int random = rnd.Next(1, 101);
                     double temp = 0;
                     for(int h = 0; h < possible.Count; h++) {
-                        temp += p[possible[h]];
+                        temp += Math.Ceiling(p[possible[h]]);
                         if (random <= temp) {
+                            way.Add(possible[h]);
                             position = possible[h];
                             h = possible.Count;
                         }
                     }
-                    way.Add(position);
-                    if (position == 0) {
+                    
+                    if (way[way.Count-1] == 0) {
                         end = true;
                     }
                 }
@@ -277,14 +281,28 @@ namespace Travelling_salesman_problem {
                     maxProfit = Convert.ToInt32(deltaTau);
                 }
                 for(int j = 0; j < way.Count; j++) {
-                    tau[position, way[j]] = tau[position, way[j]] * (1 - old) + deltaTau / length;
+                    if (deltaTau > 0) {
+                        tau[position, way[j]] = tau[position, way[j]] * (1 - old) + deltaTau;
+                        position = way[j];
+                    }
+                    else {
+                        tau[position, way[j]] = tau[position, way[j]] * (1 - old) ;
+                        position = way[j];
+                    }
                 }
             }
-            ShowResult();
+            if (maxProfit < 0) {
+                bestWay = new List<int>() { 0, 0 };
+                maxProfit = 0;
+            }
+            //ShowResult();
         }
 
         private double Profit(List<int> way,ref double length) {
             int position = 0;
+            if (way.Count == 1 && way[0] == 0) {
+                return 0;
+            }
             for(int i = 0; i < way.Count; i++) {
                 length += citiesMatrix[position, way[i]];
                 position = way[i];
@@ -293,7 +311,11 @@ namespace Travelling_salesman_problem {
         }
 
         private void TryToEnd(ref List<int> way) {
+            
             while (true) {
+                if (way.Count == 0) {
+                    return;
+                }
                 if (citiesMatrix[way[way.Count-1], 0] != 0) {
                     return;
                 }
