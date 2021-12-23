@@ -78,7 +78,7 @@ namespace Travelling_salesman_problem {
                 s[j] = true;
                 
             }
-            ShowResult();
+            //ShowResult();
         }
 
         private void CheckBest(bool[] s) {
