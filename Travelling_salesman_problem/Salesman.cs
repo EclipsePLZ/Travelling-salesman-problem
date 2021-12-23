@@ -78,7 +78,7 @@ namespace Travelling_salesman_problem {
                 s[j] = true;
                 
             }
-            //ShowResult();
+            ShowResult();
         }
 
         private void CheckBest(bool[] s) {
@@ -217,9 +217,92 @@ namespace Travelling_salesman_problem {
         }
 
         public void HeuristicAlgorithm() {
+            Random rnd = new Random();
+            double[,] tau = new double[n, n];
+            double old = 0.3;
+            int m = 100;
+            int beta = 1;
+            int alpha = 1;
+           
 
+            for(int i = 0; i < n; i++) {
+                for(int j = 0; j < n; j++) {
+                    tau[i, j] = 1;
+                }
+            }
+
+            for(int i = 0; i < m; i++) {
+                bool end = false;
+                List<int> way = new List<int>();
+                
+                double[] p = new double[n];
+                int position = 0;
+                while (!end) {
+                    double znam = 0;
+                    List<int> possible = new List<int>();
+                    for (int j = 0; j < n; j++) {
+                        if (!way.Contains(j) && citiesMatrix[position, j] != 0) {
+                            possible.Add(j);
+                            znam += (1 / Math.Pow(citiesMatrix[position, j],beta)) * Math.Pow(tau[position, j],alpha);
+                        }
+                    }
+                    if (possible.Count == 0) {
+                        TryToEnd(ref way);
+                    }
+                    
+                    foreach(int item in possible) {
+                        p[item] = 100 * 1/Math.Pow(citiesMatrix[position, item], beta) * Math.Pow(tau[position, item], alpha) / znam;
+                    }
+                    int random = rnd.Next(1, 101);
+                    double temp = 0;
+                    for(int h = 0; h < possible.Count; h++) {
+                        temp += p[possible[h]];
+                        if (random <= temp) {
+                            position = possible[h];
+                            h = possible.Count;
+                        }
+                    }
+                    way.Add(position);
+                    if (position == 0) {
+                        end = true;
+                    }
+                }
+                position = 0;
+                double length = 0;
+                double deltaTau = Profit(way,ref length) ;
+                if (maxProfit < deltaTau) {
+                    bestWay = new List<int>();
+                    bestWay.Add(0);
+                    bestWay.AddRange(way);
+                    maxProfit = Convert.ToInt32(deltaTau);
+                }
+                for(int j = 0; j < way.Count; j++) {
+                    tau[position, way[j]] = tau[position, way[j]] * (1 - old) + deltaTau / length;
+                }
+            }
+            ShowResult();
         }
 
+        private double Profit(List<int> way,ref double length) {
+            int position = 0;
+            for(int i = 0; i < way.Count; i++) {
+                length += citiesMatrix[position, way[i]];
+                position = way[i];
+            }
+            return Convert.ToDouble((way.Count) * s) - length;
+        }
 
+        private void TryToEnd(ref List<int> way) {
+            while (true) {
+                if (citiesMatrix[way[way.Count-1], 0] != 0) {
+                    return;
+                }
+                else {
+                    way.RemoveAt(way.Count - 1);
+                }
+            }
+        }
+
+        
     }
 }
