@@ -9,10 +9,122 @@ using System.Threading.Tasks;
 namespace Travelling_salesman_problem {
     class Tests {
         public void StartTesting(int start, int n) {
-            StartApprox(start, n);
-            StartBruteForce(start, n);
+            //StartApprox(start, n);
+            //StartBruteForce(start, n);
             //StartHeuristic(start, n);
+            //FindMaxVApprox();
+            FindMaxVHeu();
         }
+
+        private void FindMaxVHeu() {
+            Random rnd = new Random();
+            int[,] matrix;
+            int numTests = 1;
+            using (StreamWriter sw = new StreamWriter("MaxHeu.txt", false)) {
+
+            }
+            int i = 2;
+            while (true) {
+
+                //if (i == 300) {
+                //    numTests = 100;
+                //}
+                //if (i == 100) {
+                //    numTests = 300;
+                //}
+                matrix = new int[i, i];
+                Console.WriteLine(i);
+                string result = "";
+                result += "Результат для муравьиного алгоритма при V = " + i;
+                double totalTime = 0.0;
+                double countRightAnswers = 0.0;
+                double otkl = 0.0;
+
+                for (int k = 0; k < i; k++) {
+                    for (int h = 0; h < i; h++) {
+                        if (k == h) {
+                            matrix[k, h] = 0;
+                        }
+                        else {
+                            matrix[k, h] = rnd.Next(0, 13);
+                        }
+                    }
+                }
+                int s = rnd.Next(10, 18);
+
+                for (int j = 0; j < numTests; j++) {
+                    Salesman sl = new Salesman();
+                    sl.ReadFromMatrix(matrix, i, s);
+                    Stopwatch time = new Stopwatch();
+                    time.Start();
+                    sl.HeuristicAlgorithm();
+                    time.Stop();
+                    totalTime += time.Elapsed.TotalMilliseconds;
+                }
+                i += 150;
+                result += " Время работы: " + totalTime / numTests + " мс.";
+                using (StreamWriter sw = new StreamWriter("MaxHeu.txt", true)) {
+                    sw.WriteLine(result);
+                }
+
+
+            }
+        }
+
+        private void FindMaxVApprox() {
+            Random rnd = new Random();
+            int[,] matrix;
+            int numTests = 1;
+            using (StreamWriter sw = new StreamWriter("MaxApprox.txt", false)) {
+
+            }
+            int i = 2;
+            while (true) {
+
+                //if (i == 300) {
+                //    numTests = 100;
+                //}
+                //if (i == 100) {
+                //    numTests = 300;
+                //}
+                matrix = new int[i, i];
+                Console.WriteLine(i);
+                string result = "";
+                result += "Результат для приближенного алгоритма при V = " + i;
+                double totalTime = 0.0;
+                double countRightAnswers = 0.0;
+                double otkl = 0.0;
+
+                for (int k = 0; k < i; k++) {
+                    for (int h = 0; h < i; h++) {
+                        if (k == h) {
+                            matrix[k, h] = 0;
+                        }
+                        else {
+                            matrix[k, h] = rnd.Next(0, 13);
+                        }
+                    }
+                }
+                int s = rnd.Next(10, 18);
+
+                for(int j = 0; j < numTests; j++) {
+                    Salesman sl = new Salesman();
+                    sl.ReadFromMatrix(matrix, i, s);
+                    Stopwatch time = new Stopwatch();
+                    time.Start();
+                    sl.ApproximateAlgorithm();
+                    time.Stop();
+                    totalTime += time.Elapsed.TotalMilliseconds;
+                }
+                i+=250;
+                result += " Время работы: " + totalTime/numTests + " мс.";
+                using (StreamWriter sw = new StreamWriter("MaxApprox.txt", true)) {
+                    sw.WriteLine(result);
+                }
+
+               
+            }
+            }
 
         private void StartBruteForce(int start, int n) {
             int[,] matrix;
@@ -174,7 +286,7 @@ namespace Travelling_salesman_problem {
         private void StartHeuristic(int start, int n) {
             int[,] matrix;
             int numTests = 10000;
-            using (StreamWriter sw = new StreamWriter("HeuristicResult.txt", false)) {
+            using (StreamWriter sw = new StreamWriter("HeuristicResult1.txt", false)) {
 
             }
             for (int i = start; i <= n; i++) {
@@ -244,7 +356,7 @@ namespace Travelling_salesman_problem {
                     }
                 }
                 result += ", время работы алгоритма: " + totalTime / numTests + "мс. Процент правильных ответов: " + countRightAnswers / numTests * 100 + "%. Ср. относ. откл.: " + otkl / numTests;
-                using (StreamWriter sw = new StreamWriter("HeuristicResult.txt", true)) {
+                using (StreamWriter sw = new StreamWriter("HeuristicResult1.txt", true)) {
                     sw.WriteLine(result);
                 }
             }

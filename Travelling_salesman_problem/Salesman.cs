@@ -173,7 +173,7 @@ namespace Travelling_salesman_problem {
             while (true) {
                 int minCost = int.MaxValue;
                 for (int i = 0; i < n; i++) {
-                    if (citiesMatrix[startV, i]!=0&&citiesMatrix[startV, i] < minCost&&!bestWay.Contains(i)) {
+                    if (citiesMatrix[startV, i]!=0&&!bestWay.Contains(i)) {
                         minCost = citiesMatrix[startV, i];
                         finishV = i;
                     }
@@ -221,15 +221,15 @@ namespace Travelling_salesman_problem {
         public void HeuristicAlgorithm() {
             Random rnd = new Random();
             double[,] tau = new double[n, n];
-            double old = 0.4;
-            int m = 20000;
+            double old = 0.5;
+            int m = n*n*50;
             double beta = 1.2;
-            double alpha = 0.9;
+            double alpha = 1;
            
 
             for(int i = 0; i < n; i++) {
                 for(int j = 0; j < n; j++) {
-                    tau[i, j] = n;
+                    tau[i, j] = s;
                 }
             }
 
